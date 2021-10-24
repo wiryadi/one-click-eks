@@ -4,20 +4,16 @@ SHELL := /bin/bash
 CHECK_AWS_CLI := $(shell command -v aws 2> /dev/null)
 CHECK_EKSCTL := $(shell command -v eksctl 2> /dev/null)
 
-#CONFIGURABLE
-#KUBECONFIG_FILE := output/${CLUSTER_NAME}.kubeconfig
-EC2_KEYPAIR ?= eksworkshop
+#use values from parent shell, otherwise use these default values
 AWS_REGION ?= ap-southeast-2
 KMS_CMK_ALIAS ?= eksworkshop
-CLUSTER_NAME ?= eksworkshop-eksctl
+CLUSTER_NAME ?= eksworkshop
 
 export KMS_CMK_ALIAS
 export AWS_REGION
-export EC2_KEYPAIR
 export CLUSTER_NAME
 
-.PHONY: verify create_all create_cluster \
-	delete_all delete_vpc delete_iam delete_cluster delete_keypair
+.PHONY: setup clean verify create_cluster delete_cluster
 
 verify:
 ifndef CHECK_AWS_CLI
@@ -34,11 +30,9 @@ endif
 setup:
 	mkdir -p workspace
 
-create_all: workspace/.create_cluster
-
-create_cluster: workspace/.create_cluster
-workspace/.create_cluster:
+create_cluster: setup
 	src/scripts/create-cluster.sh
+	
 
 delete_cluster:
 	src/scripts/delete-cluster.sh

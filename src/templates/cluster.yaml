@@ -4,22 +4,17 @@ kind: ClusterConfig
 metadata:
   name: ${CLUSTER_NAME}
   region: ${AWS_REGION}
-  version: "1.17"
+  version: "1.21"
 
 availabilityZones: ["${AWS_REGION}a", "${AWS_REGION}b", "${AWS_REGION}c"]
 
-nodeGroups:
-- name: ng-1
-  minSize: 2
-  maxSize: 5
-  ssh:
-    allow: true
-    publicKeyName: ${EC2_KEYPAIR}
-  instancesDistribution:
-    instanceTypes: ["t3.small", "t3.medium"] # At least one instance type should be specified
-    onDemandBaseCapacity: 0
-    onDemandPercentageAboveBaseCapacity: 50
-    spotInstancePools: 2
+managedNodeGroups:
+- name: spot
+  instanceTypes: ["t3a.medium","t3.medium","t3a.large","t3.large"]
+  spot: true
+  desiredCapacity: 2
+  minSize: 1
+  maxSize: 10
 
 # To enable all of the control plane logs, uncomment below:
 cloudWatch:
