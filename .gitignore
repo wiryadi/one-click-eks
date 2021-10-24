@@ -1,4 +1,5 @@
+workspace/
+.vscode/
 *.code-workspace
 .env
 *.kubeconfig
-workspace/
